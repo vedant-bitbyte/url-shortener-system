@@ -36,6 +36,17 @@ public class UrlService {
         return buildShortUrl(shortCode);
     }
 
+    public String redirectToOriginalUrl(String shortCode) {
+        ShortUrl shortUrl = shortUrlRepository.findByShortCode(shortCode)
+                .orElseThrow(() -> new RuntimeException("Short URL not found"));
+
+        shortUrl.setClickCount(shortUrl.getClickCount() + 1);
+        shortUrl.setLastAccessed(LocalDateTime.now());
+        shortUrlRepository.save(shortUrl);
+
+        return shortUrl.getOriginalUrl();
+    }
+
     private String generateUniqueShortCode() {
         String shortCode;
         do {
