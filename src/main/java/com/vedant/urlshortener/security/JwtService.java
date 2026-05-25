@@ -12,7 +12,6 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    // TODO: move to application.properties / environment variable
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
