@@ -7,6 +7,7 @@ import com.vedant.urlshortener.model.ShortUrl;
 import com.vedant.urlshortener.repository.ShortUrlRepository;
 import com.vedant.urlshortener.util.ShortCodeGenerator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,13 +15,17 @@ import java.time.LocalDateTime;
 @Service
 public class UrlService {
 
+    private static final String REDIS_KEY_PREFIX = "url:";
+
     private final ShortUrlRepository shortUrlRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
-    public UrlService(ShortUrlRepository shortUrlRepository) {
+    public UrlService(ShortUrlRepository shortUrlRepository, RedisTemplate<String, String> redisTemplate) {
         this.shortUrlRepository = shortUrlRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     public String createShortUrl(ShortenUrlRequest request) {
@@ -39,14 +44,22 @@ public class UrlService {
     }
 
     public String redirectToOriginalUrl(String shortCode) {
+        String redisKey = REDIS_KEY_PREFIX + shortCode;
+        String originalUrl = redisTemplate.opsForValue().get(redisKey);
+
         ShortUrl shortUrl = shortUrlRepository.findByShortCode(shortCode)
-                .orElseThrow(() -> new RuntimeException("Short URL not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Short URL not found"));
+
+        if (originalUrl == null) {
+            originalUrl = shortUrl.getOriginalUrl();
+            redisTemplate.opsForValue().set(redisKey, originalUrl);
+        }
 
         shortUrl.setClickCount(shortUrl.getClickCount() + 1);
         shortUrl.setLastAccessed(LocalDateTime.now());
         shortUrlRepository.save(shortUrl);
 
-        return shortUrl.getOriginalUrl();
+        return originalUrl;
     }
 
     public UrlAnalyticsResponse getUrlAnalytics(String shortCode) {
