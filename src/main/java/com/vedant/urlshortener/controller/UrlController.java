@@ -1,9 +1,12 @@
 package com.vedant.urlshortener.controller;
 
 import com.vedant.urlshortener.dto.ShortenUrlRequest;
+import com.vedant.urlshortener.dto.UrlAnalyticsResponse;
 import com.vedant.urlshortener.service.UrlService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +26,11 @@ public class UrlController {
     public ResponseEntity<String> shorten(@Valid @RequestBody ShortenUrlRequest request) {
         String shortenedUrl = urlService.createShortUrl(request);
         return ResponseEntity.ok(shortenedUrl);
+    }
+
+    @GetMapping("/analytics/{shortCode}")
+    public ResponseEntity<UrlAnalyticsResponse> getAnalytics(@PathVariable String shortCode) {
+        UrlAnalyticsResponse analytics = urlService.getUrlAnalytics(shortCode);
+        return ResponseEntity.ok(analytics);
     }
 }

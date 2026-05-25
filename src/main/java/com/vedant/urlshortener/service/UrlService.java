@@ -1,6 +1,7 @@
 package com.vedant.urlshortener.service;
 
 import com.vedant.urlshortener.dto.ShortenUrlRequest;
+import com.vedant.urlshortener.dto.UrlAnalyticsResponse;
 import com.vedant.urlshortener.model.ShortUrl;
 import com.vedant.urlshortener.repository.ShortUrlRepository;
 import com.vedant.urlshortener.util.ShortCodeGenerator;
@@ -45,6 +46,19 @@ public class UrlService {
         shortUrlRepository.save(shortUrl);
 
         return shortUrl.getOriginalUrl();
+    }
+
+    public UrlAnalyticsResponse getUrlAnalytics(String shortCode) {
+        ShortUrl shortUrl = shortUrlRepository.findByShortCode(shortCode)
+                .orElseThrow(() -> new RuntimeException("Short URL not found"));
+
+        return new UrlAnalyticsResponse(
+                shortUrl.getOriginalUrl(),
+                shortUrl.getShortCode(),
+                shortUrl.getClickCount(),
+                shortUrl.getCreatedAt(),
+                shortUrl.getLastAccessed()
+        );
     }
 
     private String generateUniqueShortCode() {
