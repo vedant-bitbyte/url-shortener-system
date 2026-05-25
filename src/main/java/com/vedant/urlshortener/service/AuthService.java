@@ -4,6 +4,7 @@ import com.vedant.urlshortener.dto.LoginRequest;
 import com.vedant.urlshortener.dto.RegisterRequest;
 import com.vedant.urlshortener.model.User;
 import com.vedant.urlshortener.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,16 +13,18 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public String registerUser(RegisterRequest request) {
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -38,10 +41,10 @@ public class AuthService {
             return "Email not found";
         }
 
-        if (!user.getPassword().equals(request.getPassword())) {
-            return "Incorrect password";
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return "Login successful";
         }
 
-        return "Login successful";
+        return "Invalid password";
     }
 }
