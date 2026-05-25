@@ -1,9 +1,11 @@
 package com.vedant.urlshortener.service;
 
+import com.vedant.urlshortener.dto.AuthResponse;
 import com.vedant.urlshortener.dto.LoginRequest;
 import com.vedant.urlshortener.dto.RegisterRequest;
 import com.vedant.urlshortener.model.User;
 import com.vedant.urlshortener.repository.UserRepository;
+import com.vedant.urlshortener.security.JwtService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public AuthService(
+            UserRepository userRepository,
+            BCryptPasswordEncoder passwordEncoder,
+            JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public String registerUser(RegisterRequest request) {
@@ -33,18 +40,19 @@ public class AuthService {
         return "User registered successfully";
     }
 
-    public String loginUser(LoginRequest request) {
+    public AuthResponse loginUser(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElse(null);
 
         if (user == null) {
-            return "Email not found";
+            throw new IllegalArgumentException("Email not found");
         }
 
-        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return "Login successful";
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
         }
 
-        return "Invalid password";
+        String jwtToken = jwtService.generateToken(user.getEmail());
+        return new AuthResponse(jwtToken);
     }
 }

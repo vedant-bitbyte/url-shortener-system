@@ -1,5 +1,6 @@
 package com.vedant.urlshortener.controller;
 
+import com.vedant.urlshortener.dto.AuthResponse;
 import com.vedant.urlshortener.dto.LoginRequest;
 import com.vedant.urlshortener.dto.RegisterRequest;
 import com.vedant.urlshortener.service.AuthService;
@@ -27,8 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
-        String message = authService.loginUser(request);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        AuthResponse response = authService.loginUser(request);
+        return ResponseEntity.ok(response);
     }
 }
