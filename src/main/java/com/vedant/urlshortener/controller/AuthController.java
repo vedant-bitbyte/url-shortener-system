@@ -1,5 +1,6 @@
 package com.vedant.urlshortener.controller;
 
+import com.vedant.urlshortener.dto.LoginRequest;
 import com.vedant.urlshortener.dto.RegisterRequest;
 import com.vedant.urlshortener.service.AuthService;
 import jakarta.validation.Valid;
@@ -22,6 +23,12 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
         String message = authService.registerUser(request);
+        return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
+        String message = authService.loginUser(request);
         return ResponseEntity.ok(message);
     }
 }
