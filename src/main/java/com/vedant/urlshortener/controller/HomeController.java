@@ -32,10 +32,10 @@ public class HomeController {
         });
 
         response.put("github",
-                "https://github.com/YOUR_USERNAME/YOUR_REPOSITORY");
+                "https://github.com/vedant-bitbyte/url-shortener-system");
 
         response.put("postmanCollection",
-                "https://documenter.getpostman.com/view/YOUR_COLLECTION_ID");
+                "https://documenter.getpostman.com/view/46228340/2sBXwnsrLa");
 
         response.put("health", "/actuator/health");
 
