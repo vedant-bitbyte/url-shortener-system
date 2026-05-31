@@ -15,6 +15,24 @@ REST API for shortening URLs, JWT-secured management endpoints, public redirects
 - Docker Compose (app, MySQL, Redis)
 
 ---
+## System Architecture
+
+![System Architecture](docs/images/system-architecture.png)
+
+### Architecture Overview
+
+- Spring Boot acts as the central application layer.
+- JWT Authentication secures protected endpoints.
+- Redis is used as a caching layer for frequently accessed URL mappings.
+- MySQL serves as the source of truth for users, URLs.
+- All client requests are routed through the Spring Boot API.
+
+---
+## URL Redirection Flow
+
+![Redirect Flow](docs/images/url-redirection-flow.png)
+
+---
 
 ## Tech Stack
 
@@ -34,7 +52,6 @@ Base: `http://localhost:8080`
 | `GET` | `/api/url/analytics/{shortCode}` | JWT |
 | `GET` | `/{shortCode}` | Public |
 | `GET` | `/api/health` | JWT |
-| `GET` | `/api/test` | JWT |
 
 ---
 
