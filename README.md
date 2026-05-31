@@ -93,7 +93,7 @@ src/main/java/com/vedant/urlshortener/
 ### Clone & configure
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/vedant-bitbyte/url-shortener-system.git
 cd urlshortener
 cp .env.example .env
 # Set your local secrets in .env (not committed)
@@ -171,10 +171,13 @@ GET /aB3xY9
 
 ---
 
-## Roadmap
+## Quick Links
 
-Rate limiting · custom aliases · Swagger · cache TTL · CI/CD
+| Resource                               | Link                                                   |
+|----------------------------------------|--------------------------------------------------------|
+| Live Deployment                        | https://url-shortener-system.up.railway.app            |
+| GitHub Repository                      | https://github.com/vedant-bitbyte/url-shortener-system |
+| Postman Collection / API Documentation | https://documenter.getpostman.com/view/46228340/2sBXwnsrLa|
 
 ---
-
 Backend portfolio project by **Vedant Pawar** — secure APIs, persistence, caching, and containerized dependencies in one codebase.
