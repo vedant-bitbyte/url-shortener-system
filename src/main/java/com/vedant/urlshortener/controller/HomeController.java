@@ -37,8 +37,6 @@ public class HomeController {
         response.put("postmanCollection",
                 "https://documenter.getpostman.com/view/46228340/2sBXwnsrLa");
 
-        response.put("health", "/actuator/health");
-
         return response;
     }
 }
